@@ -1,0 +1,24 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.board-row {
+    display: flex;
+}
+
+.board-square {
+    font-size: 6em;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    margin: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.board-square-win {
+    color: green;
+}

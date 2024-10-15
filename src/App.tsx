@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import TicTacToe from "./tictactoe";
+import Snake from "./snake";
+
+const enum Game {
+    None,
+    TicTacToe,
+    Snake,
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [game, setGame] = useState(Game.None);
+    let gameJSX = <div />;
+    switch (game) {
+        case Game.None:
+            gameJSX = <div />;
+            break;
+        case Game.TicTacToe:
+            gameJSX = <TicTacToe />;
+            break;
+        case Game.Snake:
+            gameJSX = <Snake />;
+            break;
+    }
+    return (
+        <div>
+            <div>
+                <button onClick={() => setGame(Game.TicTacToe)}>
+                    TicTacToe
+                </button>
+                <button onClick={() => setGame(Game.Snake)}>Snake</button>
+            </div>
+            {gameJSX}
+        </div>
+    );
 }
 
 export default App;
