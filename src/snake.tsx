@@ -150,12 +150,16 @@ function Snake() {
         if (!current) return;
         const ctx = current.getContext("2d");
         if (!ctx) return;
-        let interval: ReturnType<typeof setInterval> | undefined;
+        let interval: ReturnType<typeof setTimeout> | undefined;
+
+        const mainScreen = () => {
+            gameIntro(ctx);
+            interval = setTimeout(() => requestAnimationFrame(mainScreen), 100);
+        };
 
         if (!start) {
-            gameIntro(ctx);
+            mainScreen();
             window.addEventListener("keyup", startGame);
-            interval = setInterval(() => gameIntro(ctx), 100);
             return () => {
                 if (interval) clearInterval(interval);
                 window.removeEventListener("keyup", startGame);
@@ -224,11 +228,11 @@ function Snake() {
                 nextSquare = getNextSquare(squares);
                 color = getRandomColor();
             }
+
+            interval = setTimeout(() => requestAnimationFrame(tick), 100);
         };
 
         tick();
-
-        interval = setInterval(tick, 100);
 
         return () => {
             if (interval) clearInterval(interval);
