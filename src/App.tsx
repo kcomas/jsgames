@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import HN from "./hn";
 import TicTacToe from "./tictactoe";
 import Snake from "./snake";
 
 enum Game {
-    None = "None",
+    HN = "HN",
     TicTacToe = "TicTacToe",
     Snake = "Snake",
 }
 
 const games = {
-    [Game.None]: <div />,
+    [Game.HN]: <HN />,
     [Game.TicTacToe]: <TicTacToe />,
     [Game.Snake]: <Snake />,
 };
 
 function App() {
-    const [game, setGame] = useState(Game.None);
+    const [game, setGame] = useState(Game.HN);
     let gameJSX = games[game];
     return (
         <div>
