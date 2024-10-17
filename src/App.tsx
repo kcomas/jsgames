@@ -3,33 +3,29 @@ import "./App.css";
 import TicTacToe from "./tictactoe";
 import Snake from "./snake";
 
-const enum Game {
-    None,
-    TicTacToe,
-    Snake,
+enum Game {
+    None = "None",
+    TicTacToe = "TicTacToe",
+    Snake = "Snake",
 }
+
+const games = {
+    [Game.None]: <div />,
+    [Game.TicTacToe]: <TicTacToe />,
+    [Game.Snake]: <Snake />,
+};
 
 function App() {
     const [game, setGame] = useState(Game.None);
-    let gameJSX = <div />;
-    switch (game) {
-        case Game.None:
-            gameJSX = <div />;
-            break;
-        case Game.TicTacToe:
-            gameJSX = <TicTacToe />;
-            break;
-        case Game.Snake:
-            gameJSX = <Snake />;
-            break;
-    }
+    let gameJSX = games[game];
     return (
         <div>
             <div>
-                <button onClick={() => setGame(Game.TicTacToe)}>
-                    TicTacToe
-                </button>
-                <button onClick={() => setGame(Game.Snake)}>Snake</button>
+                {Object.keys(games).map((gName) => (
+                    <button key={gName} onClick={() => setGame(gName as Game)}>
+                        {gName}
+                    </button>
+                ))}
             </div>
             {gameJSX}
         </div>

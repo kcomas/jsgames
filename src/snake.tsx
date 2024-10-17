@@ -222,6 +222,7 @@ function Snake() {
                     floor(height / 2)
                 );
                 setTimeout(() => setStart(false), 1000);
+                return;
             } else if (cmpSquares(squares[0], nextSquare)) {
                 score++;
                 squares.push(nextSquare);
