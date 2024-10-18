@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useReducer } from "react";
+import React, { useId, useEffect, useReducer } from "react";
 import "./hn.css";
 
 const hnUrl = window.location.protocol + "//hacker-news.firebaseio.com/v0/";
@@ -111,28 +111,29 @@ function HN() {
         bodyJSX = <>{printItems()}</>;
     }
 
+    const selectId = useId();
+
     return (
         <div>
-            <label>
-                HN Feed: {state.curHnEndPt}
-                <select
-                    value={state.curHnEndPt}
-                    onChange={(e) =>
-                        dispatch({
-                            type: Action.SetEndPt,
-                            data: {
-                                curHnEndPt: e.target.value as HnUrlEndPts,
-                            },
-                        })
-                    }
-                >
-                    {Object.values(HnUrlEndPts).map((endpt) => (
-                        <option key={endpt} value={endpt}>
-                            {endpt}
-                        </option>
-                    ))}
-                </select>
-            </label>
+            <label htmlFor={selectId}>HN Feed: {state.curHnEndPt}</label>
+            <select
+                id={selectId}
+                value={state.curHnEndPt}
+                onChange={(e) =>
+                    dispatch({
+                        type: Action.SetEndPt,
+                        data: {
+                            curHnEndPt: e.target.value as HnUrlEndPts,
+                        },
+                    })
+                }
+            >
+                {Object.values(HnUrlEndPts).map((endpt) => (
+                    <option key={endpt} value={endpt}>
+                        {endpt}
+                    </option>
+                ))}
+            </select>
             {bodyJSX}
         </div>
     );
