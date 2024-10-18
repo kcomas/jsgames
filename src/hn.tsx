@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { ChangeEventHandler, useEffect, useReducer } from "react";
 
 const hnUrl = window.location.protocol + "//hacker-news.firebaseio.com/v0/";
 
@@ -22,13 +22,21 @@ interface HnItem {
     id: number;
 }
 
+interface HnItem {
+    id: number;
+    title?: string;
+}
+
 interface State {
+    loading: boolean;
     er: string;
     curHnEndPt: HnUrlEndPts;
-    items: any[];
+    items: HnItem[];
 }
 
 enum Action {
+    SetLoading,
+    SetEndPt,
     SetItems,
 }
 
@@ -36,8 +44,15 @@ function reducer(state: State, action: { type: Action; data: Partial<State> }) {
     state = { ...state };
     const { type, data } = action;
     switch (type) {
+        case Action.SetLoading:
+            state.loading = data?.loading ?? true;
+            break;
+        case Action.SetEndPt:
+            state.curHnEndPt = data?.curHnEndPt ?? HnUrlEndPts.TopStories;
+            break;
         case Action.SetItems:
             state.items = data?.items ?? [];
+            break;
     }
     return state;
 }
@@ -53,6 +68,7 @@ async function fetchHNItem(id: number) {
 
 function HN() {
     const [state, dispatch] = useReducer(reducer, {
+        loading: true,
         er: "",
         curHnEndPt: HnUrlEndPts.TopStories,
         items: [],
@@ -60,12 +76,14 @@ function HN() {
 
     const fetchEndPt = async () => {
         try {
+            dispatch({ type: Action.SetLoading, data: { loading: true } });
             const res = await fetch(getEndPt(state.curHnEndPt) + ".json");
             const itemIds = (await res.json()) as number[];
             const items = await Promise.all(
                 itemIds.slice(0, maxItems).map((id) => fetchHNItem(id))
             );
             dispatch({ type: Action.SetItems, data: { items } });
+            dispatch({ type: Action.SetLoading, data: { loading: false } });
         } catch (er) {
             // TODO dispatch
         }
@@ -77,9 +95,41 @@ function HN() {
 
     useEffect(() => {
         fetchEndPt();
-    }, []);
+    }, [state.curHnEndPt]);
 
-    return <div>{printItems()}</div>;
+    let bodyJSX = <h2>Loading {state.curHnEndPt} .......</h2>;
+
+    if (state.er) {
+        bodyJSX = <h2 className="hn-er">{state.er}</h2>;
+    } else if (!state.loading) {
+        bodyJSX = <>{printItems()}</>;
+    }
+
+    return (
+        <div>
+            <label>
+                HN Feed: {state.curHnEndPt}
+                <select
+                    value={state.curHnEndPt}
+                    onChange={(e) =>
+                        dispatch({
+                            type: Action.SetEndPt,
+                            data: {
+                                curHnEndPt: e.target.value as HnUrlEndPts,
+                            },
+                        })
+                    }
+                >
+                    {Object.values(HnUrlEndPts).map((endpt) => (
+                        <option key={endpt} value={endpt}>
+                            {endpt}
+                        </option>
+                    ))}
+                </select>
+            </label>
+            {bodyJSX}
+        </div>
+    );
 }
 
 export default HN;
