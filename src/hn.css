@@ -1,3 +1,21 @@
+.hn-loading {
+    margin: 0 auto;
+    width: 30px;
+    height: 30px;
+    background-color: black;
+    animation: 0.5s infinite normal spin;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(90deg);
+    }
+}
+
 .hn-er {
     font-weight: bold;
     color: red;

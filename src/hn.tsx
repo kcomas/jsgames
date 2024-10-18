@@ -1,4 +1,5 @@
 import React, { ChangeEventHandler, useEffect, useReducer } from "react";
+import "./hn.css";
 
 const hnUrl = window.location.protocol + "//hacker-news.firebaseio.com/v0/";
 
@@ -97,7 +98,12 @@ function HN() {
         fetchEndPt();
     }, [state.curHnEndPt]);
 
-    let bodyJSX = <h2>Loading {state.curHnEndPt} .......</h2>;
+    let bodyJSX = (
+        <>
+            <h2>Loading {state.curHnEndPt}</h2>
+            <div className="hn-loading"></div>
+        </>
+    );
 
     if (state.er) {
         bodyJSX = <h2 className="hn-er">{state.er}</h2>;
