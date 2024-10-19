@@ -64,7 +64,7 @@ function gameIntro(ctx: CanvasRenderingContext2D) {
     drawRandomSquares(ctx, 100);
     ctx.font = "48px serif";
     ctx.fillStyle = getRandomColor();
-    ctx.fillText("Press Any Key", floor(width / 2) - 130, floor(height / 2));
+    ctx.fillText("Press Any Arrow Key", floor(width / 10), floor(height / 2));
 }
 
 enum MoveDirection {
@@ -80,7 +80,7 @@ function getNextSquare(squares: XY[]) {
     while (true) {
         let i = 0;
         for (let i = 0; i < squares.length; i++) {
-            if (newSquare.x == squares[i].x && newSquare.y == squares[i].y)
+            if (newSquare.x === squares[i].x && newSquare.y === squares[i].y)
                 break;
         }
         if (i !== squares.length) break;

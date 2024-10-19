@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { classNames } from "./util";
 import "./tictactoe.css";
 
 type TicTacToePlayer = "X" | "O";
 type TicTacToeSquare = TicTacToePlayer | "";
 type TicTacToeBoard = Array<TicTacToeSquare>;
 type TicTacToeWin = Set<number> | undefined;
-
-const clickTgt = 9;
-const clickStart = 1;
 
 function TicTacToe() {
     const [win, setWin] = useState<TicTacToeWin>();
@@ -39,6 +37,11 @@ function TicTacToe() {
         setBoard(new Array<TicTacToeSquare>(9).fill(""));
     };
 
+    const checkWin = (a: number, b: number, c: number) => {
+        if (board[a] !== "" && board[a] === board[b] && board[b] === board[c])
+            setWin(new Set([a, b, c]));
+    };
+
     const click = (x: number, y: number) => {
         if (win || board.filter((x) => x === "").length === 0) {
             reset();
@@ -46,15 +49,6 @@ function TicTacToe() {
         }
         if (getSquare(x, y) !== "") return;
         setSquare(x, y, switchPlayer());
-    };
-
-    const checkWin = (a: number, b: number, c: number) => {
-        if (board[a] !== "" && board[a] === board[b] && board[b] === board[c])
-            setWin(new Set([a, b, c]));
-    };
-
-    useEffect(() => {
-        if (win || board.filter((x) => x === "").length === 0) return;
         // rows
         checkWin(0, 1, 2);
         checkWin(3, 4, 5);
@@ -66,14 +60,19 @@ function TicTacToe() {
         // diagonal
         checkWin(0, 4, 8);
         checkWin(2, 4, 6);
-    }, [board]);
+    };
 
     const getRow = (start: number, end: number) => (
         <div className="board-row">
             {board.slice(start, end).map((square, idx) => (
                 <div
                     key={idx.toString()}
-                    className={`board-square ${win?.has(start + idx) && "board-square-win"}`}
+                    className={classNames({
+                        "board-square": true,
+                        "board-square-win": win?.has(start + idx),
+                        "board-square-x": !win && square === "X",
+                        "board-square-o": !win && square === "O",
+                    })}
                     onClick={() => click(idx % 3, Math.floor(end / 3) - 1)}
                 >
                     {square}

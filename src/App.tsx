@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import HN from "./hn";
 import TicTacToe from "./tictactoe";
@@ -17,7 +17,7 @@ const games = {
 };
 
 function App() {
-    const [game, setGame] = useState(Game.HN);
+    const [game, setGame] = useState(Game.TicTacToe);
     let gameJSX = games[game];
     return (
         <div>

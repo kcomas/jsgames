@@ -19,6 +19,14 @@
     cursor: pointer;
 }
 
+.board-square-x {
+    color: cyan;
+}
+
+.board-square-o {
+    color: magenta;
+}
+
 .board-square-win {
     color: green;
 }
