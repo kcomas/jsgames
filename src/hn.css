@@ -19,3 +19,11 @@
     font-weight: bold;
     color: red;
 }
+
+.hn-page {
+    text-align: center;
+}
+
+.hn-page-num {
+    margin: 0 10px;
+}

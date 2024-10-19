@@ -3,7 +3,8 @@ import "./hn.css";
 
 const hnUrl = window.location.protocol + "//hacker-news.firebaseio.com/v0/";
 
-const maxItems = 20;
+const maxItemsPerPage = 20;
+const maxItems = 100;
 
 enum HnUrlEndPts {
     TopStories = "topstories",
@@ -32,6 +33,7 @@ interface State {
     loading: boolean;
     er: string;
     curHnEndPt: HnUrlEndPts;
+    page: number;
     items: HnItem[];
 }
 
@@ -39,9 +41,14 @@ enum Action {
     SetLoading,
     SetEndPt,
     SetItems,
+    IncPage,
+    DecPage,
 }
 
-function reducer(state: State, action: { type: Action; data: Partial<State> }) {
+function reducer(
+    state: State,
+    action: { type: Action; data?: Partial<State> }
+) {
     state = { ...state };
     const { type, data } = action;
     switch (type) {
@@ -52,7 +59,14 @@ function reducer(state: State, action: { type: Action; data: Partial<State> }) {
             state.curHnEndPt = data?.curHnEndPt ?? HnUrlEndPts.TopStories;
             break;
         case Action.SetItems:
+            state.loading = false;
             state.items = data?.items ?? [];
+            break;
+        case Action.IncPage:
+            if (state.page * maxItemsPerPage < state.items.length) state.page++;
+            break;
+        case Action.DecPage:
+            if (state.page > 1) state.page--;
             break;
     }
     return state;
@@ -72,6 +86,7 @@ function HN() {
         loading: true,
         er: "",
         curHnEndPt: HnUrlEndPts.TopStories,
+        page: 1,
         items: [],
     });
 
@@ -84,14 +99,18 @@ function HN() {
                 itemIds.slice(0, maxItems).map((id) => fetchHNItem(id))
             );
             dispatch({ type: Action.SetItems, data: { items } });
-            dispatch({ type: Action.SetLoading, data: { loading: false } });
         } catch (er) {
             // TODO dispatch
         }
     };
 
     const printItems = () => {
-        return state.items.map((item) => <p key={item.id}>{item.title}</p>);
+        return state.items
+            .slice(
+                state.page * maxItemsPerPage,
+                state.page * maxItemsPerPage + maxItemsPerPage
+            )
+            .map((item) => <p key={item.id}>{item.title}</p>);
     };
 
     useEffect(() => {
@@ -108,7 +127,20 @@ function HN() {
     if (state.er) {
         bodyJSX = <h2 className="hn-er">{state.er}</h2>;
     } else if (!state.loading) {
-        bodyJSX = <>{printItems()}</>;
+        bodyJSX = (
+            <>
+                {printItems()}
+                <div className="hn-page">
+                    <button onClick={() => dispatch({ type: Action.DecPage })}>
+                        {"<<<<<"}
+                    </button>
+                    <span className="hn-page-num">{state.page}</span>
+                    <button onClick={() => dispatch({ type: Action.IncPage })}>
+                        {">>>>>"}
+                    </button>
+                </div>
+            </>
+        );
     }
 
     const selectId = useId();
