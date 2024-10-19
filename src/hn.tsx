@@ -24,6 +24,7 @@ interface HnItem {
 interface HnItem {
     id: number;
     title?: string;
+    url?: string;
 }
 
 interface Props {
@@ -92,32 +93,37 @@ function HN({ maxItems, maxItemsPerPage }: Props) {
         items: [],
     });
 
-    const fetchEndPt = async () => {
-        try {
-            dispatch({ type: Action.SetLoading, data: { loading: true } });
-            const res = await fetch(getEndPt(state.curHnEndPt) + ".json");
-            const itemIds = (await res.json()) as number[];
-            const items = await Promise.all(
-                itemIds.slice(0, maxItems).map((id) => fetchHNItem(id))
-            );
-            dispatch({ type: Action.SetItems, data: { items } });
-        } catch (er) {
-            // TODO dispatch
-        }
-    };
-
     const printItems = () => {
         return state.items
             .slice(
                 state.page * maxItemsPerPage,
                 state.page * maxItemsPerPage + maxItemsPerPage
             )
-            .map((item) => <p key={item.id}>{item.title}</p>);
+            .map((item) => (
+                <h4>
+                    <a href={item.url} target="_blank" key={item.id}>
+                        {item.title}
+                    </a>
+                </h4>
+            ));
     };
 
     useEffect(() => {
+        const fetchEndPt = async () => {
+            try {
+                dispatch({ type: Action.SetLoading, data: { loading: true } });
+                const res = await fetch(getEndPt(state.curHnEndPt) + ".json");
+                const itemIds = (await res.json()) as number[];
+                const items = await Promise.all(
+                    itemIds.slice(0, maxItems).map((id) => fetchHNItem(id))
+                );
+                dispatch({ type: Action.SetItems, data: { items } });
+            } catch (er) {
+                // TODO dispatch
+            }
+        };
         fetchEndPt();
-    }, [state.curHnEndPt]);
+    }, [state.curHnEndPt, maxItems]);
 
     let bodyJSX = (
         <>
