@@ -3,9 +3,6 @@ import "./hn.css";
 
 const hnUrl = window.location.protocol + "//hacker-news.firebaseio.com/v0/";
 
-const maxItemsPerPage = 20;
-const maxItems = 100;
-
 enum HnUrlEndPts {
     TopStories = "topstories",
     NewStories = "newstories",
@@ -27,6 +24,11 @@ interface HnItem {
 interface HnItem {
     id: number;
     title?: string;
+}
+
+interface Props {
+    maxItems: number;
+    maxItemsPerPage: number;
 }
 
 interface State {
@@ -63,7 +65,7 @@ function reducer(
             state.items = data?.items ?? [];
             break;
         case Action.IncPage:
-            if (state.page * maxItemsPerPage < state.items.length) state.page++;
+            state.page++;
             break;
         case Action.DecPage:
             if (state.page > 1) state.page--;
@@ -81,7 +83,7 @@ async function fetchHNItem(id: number) {
     }
 }
 
-function HN() {
+function HN({ maxItems, maxItemsPerPage }: Props) {
     const [state, dispatch] = useReducer(reducer, {
         loading: true,
         er: "",
@@ -124,6 +126,11 @@ function HN() {
         </>
     );
 
+    const incPage = () => {
+        if (state.page * maxItemsPerPage < state.items.length)
+            dispatch({ type: Action.IncPage });
+    };
+
     if (state.er) {
         bodyJSX = <h2 className="hn-er">{state.er}</h2>;
     } else if (!state.loading) {
@@ -135,9 +142,7 @@ function HN() {
                         {"<<<<<"}
                     </button>
                     <span className="hn-page-num">{state.page}</span>
-                    <button onClick={() => dispatch({ type: Action.IncPage })}>
-                        {">>>>>"}
-                    </button>
+                    <button onClick={incPage}>{">>>>>"}</button>
                 </div>
             </>
         );

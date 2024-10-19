@@ -11,7 +11,7 @@ enum Game {
 }
 
 const games = {
-    [Game.HN]: <HN />,
+    [Game.HN]: <HN maxItems={100} maxItemsPerPage={20} />,
     [Game.TicTacToe]: <TicTacToe />,
     [Game.Snake]: <Snake />,
 };
