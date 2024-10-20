@@ -93,21 +93,6 @@ function HN({ maxItems, maxItemsPerPage }: Props) {
         items: [],
     });
 
-    const printItems = () => {
-        return state.items
-            .slice(
-                state.page * maxItemsPerPage,
-                state.page * maxItemsPerPage + maxItemsPerPage
-            )
-            .map((item) => (
-                <h4>
-                    <a href={item.url} target="_blank" key={item.id}>
-                        {item.title}
-                    </a>
-                </h4>
-            ));
-    };
-
     useEffect(() => {
         const fetchEndPt = async () => {
             try {
@@ -136,6 +121,25 @@ function HN({ maxItems, maxItemsPerPage }: Props) {
         if (state.page * maxItemsPerPage < state.items.length)
             dispatch({ type: Action.IncPage });
     };
+    const printItems = () => {
+        return state.items
+            .slice(
+                state.page * maxItemsPerPage,
+                state.page * maxItemsPerPage + maxItemsPerPage
+            )
+            .map((item) => (
+                <h4 key={item.id}>
+                    <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={item.id}
+                    >
+                        {item.title}
+                    </a>
+                </h4>
+            ));
+    };
 
     if (state.er) {
         bodyJSX = <h2 className="hn-er">{state.er}</h2>;
@@ -157,7 +161,7 @@ function HN({ maxItems, maxItemsPerPage }: Props) {
     const selectId = useId();
 
     return (
-        <div>
+        <div className="hn-container">
             <label htmlFor={selectId}>HN Feed: {state.curHnEndPt}</label>
             <select
                 id={selectId}

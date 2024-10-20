@@ -21,14 +21,20 @@ function App() {
     let gameJSX = games[game];
     return (
         <div>
-            <div>
-                {Object.keys(games).map((gName) => (
-                    <button key={gName} onClick={() => setGame(gName as Game)}>
-                        {gName}
-                    </button>
-                ))}
+            <div className="game-header">
+                <div className="game-buttons">
+                    {Object.keys(games).map((gName) => (
+                        <button
+                            className="game-button"
+                            key={gName}
+                            onClick={() => setGame(gName as Game)}
+                        >
+                            {gName}
+                        </button>
+                    ))}
+                </div>
             </div>
-            {gameJSX}
+            <div className="game-container">{gameJSX}</div>
         </div>
     );
 }

@@ -15,6 +15,10 @@
     }
 }
 
+.hn-container {
+    margin: 0 auto;
+}
+
 .hn-er {
     font-weight: bold;
     color: red;
