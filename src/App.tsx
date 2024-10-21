@@ -3,6 +3,7 @@ import "./App.css";
 import HN from "./hn";
 import TicTacToe from "./tictactoe";
 import Snake from "./snake";
+import { classNames } from "./util";
 
 enum Game {
     HN = "HN",
@@ -25,7 +26,10 @@ function App() {
                 <div className="game-buttons">
                     {Object.keys(games).map((gName) => (
                         <button
-                            className="game-button"
+                            className={classNames({
+                                "game-button": true,
+                                "game-button-selected": gName === game,
+                            })}
                             key={gName}
                             onClick={() => setGame(gName as Game)}
                         >

@@ -10,9 +10,15 @@
     width: 100px;
     text-align: center;
     font-weight: bold;
+    color: black;
     background-color: white;
     margin: 10px;
     cursor: pointer;
+}
+
+.game-button-selected {
+    color: white;
+    background-color: black;
 }
 
 .game-container {
